@@ -1,6 +1,6 @@
 # pickui
 
-<img src=".github/logo.svg" width="64" alt="pickui logo: a stack of UI layers with the top one picked up" />
+<img src=".github/logo.svg" width="64" alt="pickui logo: three floating layers" />
 
 **Hand-crafted React + Tailwind components that AI can't one-shot** — physics, real 3D, tactile detail.
 Install one with the shadcn CLI, copy a single file, or paste an AI prompt that keeps the details intact.

@@ -6,5 +6,5 @@ import { markSvg } from "../src/ui/brand.ts";
 
 fs.writeFileSync("src/app/icon.svg", markSvg() + "\n");
 fs.mkdirSync(".github", { recursive: true });
-fs.writeFileSync(".github/logo.svg", markSvg({ base: "#52525b", mid: "#8b8b94" }) + "\n");
+fs.writeFileSync(".github/logo.svg", markSvg() + "\n");
 console.log("✓ wrote src/app/icon.svg and .github/logo.svg");

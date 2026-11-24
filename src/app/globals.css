@@ -93,10 +93,6 @@ html:has([data-ui-app][data-theme="light"])::-webkit-scrollbar-thumb:hover { bac
 .ui-code.ui-scroll { scrollbar-color: #3a3a40 transparent; }
 .ui-code.ui-scroll::-webkit-scrollbar-thumb { background-color: #3a3a40; }
 
-/* Logo: the picked (top) layer floats up a little more on hover. */
-.pu-mark-top { transition: transform .35s cubic-bezier(.2,.9,.3,1.4); }
-.pu-logo:hover .pu-mark-top, a:focus-visible .pu-mark-top { transform: translateY(-3px); }
-@media (prefers-reduced-motion: reduce) { .pu-mark-top { transition: none; } }
 
 /* Live previews: soft shimmer while loading, then a short fade/settle in. */
 .ui-stage-skeleton {

@@ -1,33 +1,57 @@
 /**
  * PickUI brand geometry (pure TS, no React) — shared by the Logo component,
  * the OG image and scripts/brand.mjs (favicon + README logo).
- * Mark: an isometric stack of UI layers (the exploded stack from the home hero)
- * with the top layer lifted out: you "pick" one piece of UI.
+ *
+ * Mark: three identical flat plates floating apart (the home hero's exploded
+ * stack). Easy to draw: the same thin diamond three times, 11 units apart, with
+ * dashed guides between their side corners.
+ *   bottom = pink · middle = pink mixed with gray · top = gray UI card
  */
-export const BRAND = { pink: "#ff4d8d", violet: "#8b5cf6", ink: "#0b0b10" } as const;
+export const BRAND = { pink: "#ff4d8d", mix: "#b85f83", gray: "#a1a1aa", violet: "#8b5cf6", ink: "#0b0b10" } as const;
 
-const W = 23; // half width of a plate (viewBox 0 0 64 64)
-const H = 11.5; // half height (2:1 isometric)
-const D = 4; // plate thickness
+export const VIEWBOX = "6 5 52 52";
 
-/** Geometry of one isometric plate centred at (32, cy). */
-export function plate(cy: number) {
-  const l = 32 - W, r = 32 + W;
-  return {
-    top: `M32 ${cy - H}L${r} ${cy}L32 ${cy + H}L${l} ${cy}Z`,
-    left: `M${l} ${cy}L32 ${cy + H}L32 ${cy + H + D}L${l} ${cy + D}Z`,
-    right: `M32 ${cy + H}L${r} ${cy}L${r} ${cy + D}L32 ${cy + H + D}Z`,
-    /** inset "keycap" outline on the top face */
-    inset: `M32 ${cy - H + 4.6}L${r - 9.2} ${cy}L32 ${cy + H - 4.6}L${l + 9.2} ${cy}Z`,
-  };
-}
+const HW = 23; // half width
+const HH = 10; // half height (flatter than 2:1 so it reads as a layer, not a box)
+const T = 3; // plate thickness
 
-/** Plates, bottom → top. The top one is lifted. */
-export const PLATES = { bottom: plate(45), middle: plate(37), top: plate(19.5) } as const;
-/** Standalone SVG string (favicon / README / OG). */
-export function markSvg({ base = "#3f3f46", mid = "#71717a" } = {}) {
-  const { bottom: b, middle: m, top: t } = PLATES;
-  const face = (p: ReturnType<typeof plate>, c: string) =>
-    `<g stroke="${c}" stroke-width="2" stroke-linejoin="round"><path d="${p.left}" fill="${c}" opacity=".75"/><path d="${p.right}" fill="${c}" opacity=".55"/><path d="${p.top}" fill="${c}"/></g>`;
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="4 6 56 56"><defs><linearGradient id="g" x1="9" y1="8" x2="55" y2="31" gradientUnits="userSpaceOnUse"><stop stop-color="${BRAND.pink}"/><stop offset="1" stop-color="${BRAND.violet}"/></linearGradient></defs>${face(b, base)}${face(m, mid)}<path d="M32 31.5V37.5M9 19.5V36M55 19.5V36" stroke="${mid}" stroke-width="1.4" stroke-dasharray="1.6 2.2" stroke-linecap="round"/><g stroke-linejoin="round" stroke-width="2"><path d="${t.left}" fill="#c0266a" stroke="#c0266a"/><path d="${t.right}" fill="#6d3fd6" stroke="#6d3fd6"/><path d="${t.top}" fill="url(#g)" stroke="url(#g)"/></g><path d="${t.inset}" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="1.6" stroke-linejoin="round"/></svg>`;
+/** Top face of a plate centred at (32, cy). */
+const face = (cy: number) => `M32 ${cy - HH}L${32 + HW} ${cy}L32 ${cy + HH}L${32 - HW} ${cy}Z`;
+/** Front edge (thickness) of a plate. */
+const edge = (cy: number) =>
+  `M${32 - HW} ${cy}L32 ${cy + HH}L${32 + HW} ${cy}V${cy + T}L32 ${cy + HH + T}L${32 - HW} ${cy + T}Z`;
+
+type Shape = { tag: "path" | "ellipse"; attrs: Record<string, string | number> };
+
+const plate = (cy: number, top: string, side: string): Shape[] => [
+  { tag: "path", attrs: { d: edge(cy), fill: side, stroke: side, strokeWidth: 1, strokeLinejoin: "round" } },
+  { tag: "path", attrs: { d: face(cy), fill: top, stroke: top, strokeWidth: 1, strokeLinejoin: "round" } },
+];
+const dash = { fill: "none", stroke: BRAND.gray, strokeWidth: 1.2, strokeDasharray: "1.6 2", strokeLinecap: "round" };
+
+/** Everything in the mark, in paint order (bottom plate first). */
+export const SHAPES: Shape[] = [
+  ...plate(41, BRAND.pink, "#c9356c"),
+  { tag: "path", attrs: { d: "M9 33V39M55 33V39", ...dash } },
+  ...plate(30, BRAND.mix, "#8e4865"),
+  // stitched seam along the middle plate's front
+  { tag: "path", attrs: { d: "M13 29.2L32 37.5L51 29.2", fill: "none", stroke: "#fff", strokeOpacity: 0.45, strokeWidth: 1, strokeDasharray: "1.8 2.2" } },
+  { tag: "path", attrs: { d: "M9 22V28M55 22V28", ...dash } },
+  ...plate(19, BRAND.gray, "#71717a"),
+  // the top plate is a tiny UI card: window dots, two text lines, a pink button
+  { tag: "ellipse", attrs: { cx: 19.4, cy: 18.5, rx: 1.3, ry: 0.85, fill: BRAND.pink } },
+  { tag: "ellipse", attrs: { cx: 21.2, cy: 17.7, rx: 1.3, ry: 0.85, fill: BRAND.mix } },
+  { tag: "ellipse", attrs: { cx: 23.1, cy: 16.9, rx: 1.3, ry: 0.85, fill: "#fff" } },
+  { tag: "path", attrs: { d: "M21.7 21.5L32 17M26.3 22.5L33.2 19.5", fill: "none", stroke: "#fff", strokeOpacity: 0.8, strokeWidth: 1.5, strokeLinecap: "round" } },
+  { tag: "path", attrs: { d: "M37.1 18.8L41.2 17", fill: "none", stroke: BRAND.pink, strokeWidth: 2.4, strokeLinecap: "round" } },
+];
+
+const kebab = (k: string) => k.replace(/[A-Z]/g, (m) => "-" + m.toLowerCase());
+
+/** Standalone SVG string (favicon / README). */
+export function markSvg() {
+  const body = SHAPES.map(
+    (s) => `<${s.tag} ${Object.entries(s.attrs).map(([k, v]) => `${kebab(k)}="${v}"`).join(" ")}/>`,
+  ).join("");
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${VIEWBOX}">${body}</svg>`;
 }
