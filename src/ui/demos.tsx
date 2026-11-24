@@ -101,11 +101,14 @@ export const LOADERS: Record<string, Entry> = {
   "tab-tricks": auto(() => import("../library/tab-tricks")),
   "easter-eggs": auto(() => import("../library/easter-eggs")),
   "page-shatter": auto(() => import("../library/page-shatter")),
-  "reaction-lights": auto(() => import("../library/reaction-lights")),
+  "bug-runner": auto(() => import("../library/bug-runner")),
+  "snake-dev": auto(() => import("../library/snake-dev")),
+  "ship-it": auto(() => import("../library/ship-it")),
+  "brick-breaker": auto(() => import("../library/brick-breaker")),
+  pong: auto(() => import("../library/pong")),
+  "bug-invaders": auto(() => import("../library/bug-invaders")),
   "stack-tower": auto(() => import("../library/stack-tower")),
-  "typing-racer": auto(() => import("../library/typing-racer")),
   "memory-flip": auto(() => import("../library/memory-flip")),
-  "hue-hunt": auto(() => import("../library/hue-hunt")),
   "command-palette": demo(() => import("../demos/command-palette")),
 };
 

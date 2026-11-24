@@ -7,7 +7,7 @@ Install one with the shadcn CLI, copy a single file, or paste an AI prompt that 
 
 🌐 **Live catalogue:** https://pickui.guetix.com · 📄 MIT
 
-- **94 pieces** — 42 components, 22 blocks, 8 templates, 17 packages and 5 mini-games.
+- **97 pieces** — 42 components, 22 blocks, 8 templates, 17 packages and 8 mini-games.
 - **Zero dependencies.** Every piece is one self-contained `.tsx` file: React + Tailwind CSS, nothing else.
 - **Accessible.** Keyboard support, labels, and `prefers-reduced-motion` handled in every component.
 - **Animated / Regular.** Every component has a calm version (`animated={false}`).
