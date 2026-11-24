@@ -6,7 +6,7 @@ Thanks for helping! Bug reports, new components and small, focused pull requests
 
 ```bash
 npm install
-npm run dev   # http://localhost:3000/components
+npm run dev   # http://localhost:3000
 ```
 
 ## Adding a component

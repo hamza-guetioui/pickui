@@ -16,11 +16,11 @@ const THEME_KEY = "pickui-theme";
 const THEME_BOOT = `try{if(localStorage.getItem("${THEME_KEY}")==="light")document.currentScript.parentElement.dataset.theme="light"}catch(e){}`;
 
 const NAV = [
-  { href: "/components?kind=component#browse", kind: "component", label: "Components", icon: Shapes },
-  { href: "/components?kind=block#browse", kind: "block", label: "Blocks", icon: Blocks },
-  { href: "/components?kind=template#browse", kind: "template", label: "Templates", icon: LayoutTemplate },
-  { href: "/components?kind=package#browse", kind: "package", label: "Packages", icon: Package },
-  { href: "/components?kind=game#browse", kind: "game", label: "Games", icon: Gamepad2 },
+  { href: "/?kind=component#browse", kind: "component", label: "Components", icon: Shapes },
+  { href: "/?kind=block#browse", kind: "block", label: "Blocks", icon: Blocks },
+  { href: "/?kind=template#browse", kind: "template", label: "Templates", icon: LayoutTemplate },
+  { href: "/?kind=package#browse", kind: "package", label: "Packages", icon: Package },
+  { href: "/?kind=game#browse", kind: "game", label: "Games", icon: Gamepad2 },
 ];
 
 /**
@@ -29,7 +29,7 @@ const NAV = [
  */
 export default function UIChrome({ entries, children }: { entries: ChromeEntry[]; children: ReactNode }) {
   const router = useRouter();
-  const pathname = usePathname() ?? "/components";
+  const pathname = usePathname() ?? "/";
   const rootRef = useRef<HTMLDivElement>(null);
   const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [search, setSearch] = useState(false);
@@ -77,7 +77,7 @@ export default function UIChrome({ entries, children }: { entries: ChromeEntry[]
 
   const onSelect = (it: CommandItem) => {
     if (it.id === "nav:theme") return toggleTheme();
-    if (it.id === "nav:home") return router.push("/components");
+    if (it.id === "nav:home") return router.push("/");
     if (it.id === "nav:github") return void window.open(REPO_URL, "_blank", "noopener,noreferrer");
     router.push(`/components/${it.id}`);
   };
@@ -96,7 +96,7 @@ export default function UIChrome({ entries, children }: { entries: ChromeEntry[]
         )}
       >
         <div className="mx-auto flex h-14 max-w-7xl items-center gap-4 px-4 sm:px-6">
-          <Link href="/components" className="group flex items-center" aria-label="PickUI home">
+          <Link href="/" className="group flex items-center" aria-label="PickUI home">
             <Logo />
           </Link>
 
@@ -178,7 +178,7 @@ export default function UIChrome({ entries, children }: { entries: ChromeEntry[]
       <footer className="ui-line mt-24 border-t">
         <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div>
-            <Link href="/components" className="inline-flex" aria-label="PickUI home">
+            <Link href="/" className="inline-flex" aria-label="PickUI home">
               <Logo size="lg" />
             </Link>
             <p className="ui-muted mt-4 max-w-xs text-sm leading-relaxed">
@@ -190,7 +190,7 @@ export default function UIChrome({ entries, children }: { entries: ChromeEntry[]
             title="Library"
             links={[
               ...NAV.map((n) => ({ href: n.href, label: `${n.label} (${counts(n.kind)})` })),
-              { href: "/components#browse", label: "Everything" },
+              { href: "/#browse", label: "Everything" },
             ]}
           />
           <FooterCol

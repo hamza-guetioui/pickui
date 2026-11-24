@@ -51,7 +51,7 @@ export default async function ComponentPage({ params }: { params: Promise<{ slug
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
       itemListElement: [
-        { "@type": "ListItem", position: 1, name: "Components", item: `${SITE_URL}/components` },
+        { "@type": "ListItem", position: 1, name: "Components", item: `${SITE_URL}/` },
         { "@type": "ListItem", position: 2, name: c.name, item: url },
       ],
     },

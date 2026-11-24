@@ -25,7 +25,7 @@ function H2({ id, children }: { id: string; children: React.ReactNode }) {
 function Sidebar({ current }: { current: string }) {
   return (
     <nav aria-label="Components" className="ui-scroll sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto pb-10 pr-2 text-sm">
-      <Link href="/components" className="mb-6 inline-flex items-center gap-1.5 ui-muted hover:text-[rgb(var(--ui-ink))]">
+      <Link href="/" className="mb-6 inline-flex items-center gap-1.5 ui-muted hover:text-[rgb(var(--ui-ink))]">
         <ArrowLeft className="h-3.5 w-3.5" aria-hidden /> All components
       </Link>
       {KIND_ORDER.map((kind) => {
@@ -89,7 +89,7 @@ export default function ComponentDocView({ c }: { c: ComponentEntry }) {
 
       <article className="min-w-0">
         <nav aria-label="Breadcrumb" className="flex items-center gap-2 font-mono text-xs ui-faint">
-          <Link href="/components" className="hover:text-[rgb(var(--ui-ink))]">
+          <Link href="/" className="hover:text-[rgb(var(--ui-ink))]">
             Components
           </Link>
           <span aria-hidden>/</span>

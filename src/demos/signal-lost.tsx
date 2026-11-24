@@ -9,7 +9,7 @@ export default function SignalLostDemo({ variant = "animated" }: { variant?: str
       <Link href="/" className="rounded-full bg-white px-4 py-2 text-sm font-semibold text-black hover:bg-emerald-200">
         Back to home
       </Link>
-      <Link href="/components" className="rounded-full border border-white/20 px-4 py-2 text-sm text-white/80 hover:text-white">
+      <Link href="/" className="rounded-full border border-white/20 px-4 py-2 text-sm text-white/80 hover:text-white">
         Browse components
       </Link>
     </SignalLost>

@@ -14,7 +14,7 @@ Install one with the shadcn CLI, copy a single file, or paste an AI prompt that 
 
 ## Use a component
 
-Pick one on the [catalogue](https://pickui.guetix.com/components), then either:
+Pick one on the [catalogue](https://pickui.guetix.com), then either:
 
 ```bash
 # 1. shadcn CLI — writes components/pickui/<slug>.tsx and installs nothing else

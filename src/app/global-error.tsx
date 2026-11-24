@@ -19,7 +19,7 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
           <button type="button" onClick={reset} className="inline-flex h-10 items-center rounded-full bg-white px-5 text-sm font-semibold text-black">
             Reload
           </button>
-          <Link href="/components" className="inline-flex h-10 items-center rounded-full border border-white/20 px-5 text-sm font-semibold text-white">
+          <Link href="/" className="inline-flex h-10 items-center rounded-full border border-white/20 px-5 text-sm font-semibold text-white">
             Home
           </Link>
         </SignalLost>

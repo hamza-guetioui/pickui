@@ -16,7 +16,7 @@ export const siteJsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
   name: SITE_NAME,
-  url: `${SITE_URL}/components`,
+  url: `${SITE_URL}/`,
   description: "Free, hand-crafted React + Tailwind components with physics, 3D and tactile detail.",
   inLanguage: "en",
   author,

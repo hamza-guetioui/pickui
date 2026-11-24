@@ -1,9 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // The docs live under /components (shareable, stable URLs); the root is the catalogue.
+  // The catalogue lives at the root; docs pages stay under /components/<slug>.
+  // The old /components index URL redirects home.
   async redirects() {
-    return [{ source: "/", destination: "/components", permanent: false }];
+    return [{ source: "/components", destination: "/", permanent: true }];
   },
 };
 

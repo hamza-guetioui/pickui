@@ -26,7 +26,7 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
           <button type="button" onClick={reset} className="inline-flex h-10 items-center rounded-full bg-white px-5 text-sm font-semibold text-black transition hover:opacity-85">
             Try again
           </button>
-          <Link href="/components" className="inline-flex h-10 items-center rounded-full border border-white/20 px-5 text-sm font-semibold text-white transition hover:bg-white/10">
+          <Link href="/" className="inline-flex h-10 items-center rounded-full border border-white/20 px-5 text-sm font-semibold text-white transition hover:bg-white/10">
             Back to components
           </Link>
         </SignalLost>
