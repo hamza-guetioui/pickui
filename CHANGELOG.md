@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- The catalogue is now the home page (`/`); `/components` 308-redirects there. Docs stay at `/components/<slug>`.
+
 - New brand: isometric layer-stack mark (the top layer is "picked"), favicon, README logo (`scripts/brand.mjs`).
 - SEO: per-component Open Graph + X images, JSON-LD (WebSite, ItemList, SoftwareSourceCode, BreadcrumbList),
   richer metadata, `noindex` on error pages.
