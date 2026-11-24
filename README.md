@@ -1,4 +1,6 @@
-# PickUI
+# pickui
+
+<img src="src/app/icon.svg" width="56" alt="pickui logo — a guitar pick with a pointer" />
 
 **Hand-crafted React + Tailwind components that AI can't one-shot** — physics, real 3D, tactile detail.
 Install one with the shadcn CLI, copy a single file, or paste an AI prompt that keeps the details intact.

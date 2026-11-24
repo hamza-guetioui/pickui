@@ -6,6 +6,7 @@ import { CATEGORY_ORDER, COMPONENTS, installCommand } from "../catalog";
 import Catalog, { CatalogFromUrl } from "../ui/Catalog";
 import CopyButton from "../ui/CopyButton";
 import { Crosshairs } from "../ui/Frame";
+import { PickMark } from "../ui/Logo";
 import { REPO_URL } from "../lib/site";
 
 /** /components — PickUI landing + live catalogue. */
@@ -37,7 +38,7 @@ export default function ComponentsIndexView() {
         />
         <div
           aria-hidden
-          className="absolute -top-40 left-1/2 h-80 w-[44rem] -translate-x-1/2 rounded-full bg-[conic-gradient(from_180deg,#4ade80,#22d3ee,#a78bfa,#f472b6,#fb923c,#4ade80)] opacity-[0.16] blur-3xl"
+          className="absolute -top-40 left-1/2 h-80 w-[44rem] -translate-x-1/2 rounded-full bg-[conic-gradient(from_180deg,#ff4d8d,#8b5cf6,#38bdf8,#ff4d8d)] opacity-[0.2] blur-3xl"
         />
 
         <div className="relative grid items-center gap-8 px-5 py-10 sm:px-10 sm:py-12 lg:grid-cols-[1.15fr_.85fr]">
@@ -46,7 +47,9 @@ export default function ComponentsIndexView() {
             href="#browse"
             className="inline-flex items-center gap-2 rounded-full border ui-line ui-soft py-1 pl-1 pr-3 text-xs ui-muted transition hover:border-[rgb(var(--ui-ink)/0.25)]"
           >
-            <span className="rounded-full ui-invert px-2 py-0.5 font-semibold">PickUI</span>
+            <span className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-[#ff4d8d] to-[#8b5cf6] px-2 py-0.5 font-semibold text-white">
+              <PickMark className="h-3.5 w-3.5" /> pickui
+            </span>
             {COMPONENTS.length} components, blocks &amp; templates · zero dependencies
             <ArrowRight className="h-3 w-3" aria-hidden />
           </Link>

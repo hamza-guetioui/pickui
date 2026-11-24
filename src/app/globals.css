@@ -11,7 +11,8 @@
   --ui-bg: 8 8 9;
   --ui-surface: 14 14 15;
   --ui-ink: 255 255 255;
-  --ui-accent: 74 222 128;
+  --ui-accent: 255 77 141;
+  --ui-accent-2: 139 92 246;
   color-scheme: dark;
   color: rgb(var(--ui-ink));
   background: rgb(var(--ui-bg));
@@ -20,7 +21,8 @@
   --ui-bg: 250 250 249;
   --ui-surface: 255 255 255;
   --ui-ink: 12 12 13;
-  --ui-accent: 22 163 74;
+  --ui-accent: 219 39 119;
+  --ui-accent-2: 124 58 237;
   color-scheme: light;
 }
 html:has([data-ui-app]),
@@ -53,7 +55,7 @@ html:has([data-ui-app][data-theme="light"]) body {
   box-shadow: 0 1px 2px rgb(0 0 0 / 0.04), 0 8px 24px -12px rgb(0 0 0 / 0.12);
 }
 
-/* Page scrollbar: slim rail, green thumb on hover. */
+/* Page scrollbar: slim rail, brand-pink thumb on hover. */
 html:has([data-ui-app]) {
   scrollbar-width: thin;
   scrollbar-color: #34343a rgb(8 8 9);
@@ -68,16 +70,16 @@ html:has([data-ui-app])::-webkit-scrollbar-thumb {
   border: 3px solid rgb(8 8 9);
   border-radius: 999px;
 }
-html:has([data-ui-app])::-webkit-scrollbar-thumb:hover { background: #4ade80; }
+html:has([data-ui-app])::-webkit-scrollbar-thumb:hover { background: #ff4d8d; }
 html:has([data-ui-app][data-theme="light"])::-webkit-scrollbar-track { background: rgb(250 250 249); }
 html:has([data-ui-app][data-theme="light"])::-webkit-scrollbar-thumb { background: #cfcfcb; border-color: rgb(250 250 249); }
-html:has([data-ui-app][data-theme="light"])::-webkit-scrollbar-thumb:hover { background: #16a34a; }
+html:has([data-ui-app][data-theme="light"])::-webkit-scrollbar-thumb:hover { background: #db2777; }
 /* Inner scroll areas (code, sidebar, prompt, palette). */
 .ui-scroll {
   scrollbar-width: thin;
   scrollbar-color: rgb(var(--ui-ink, 255 255 255) / 0.18) transparent;
 }
-.ui-scroll:hover { scrollbar-color: rgb(var(--ui-accent, 74 222 128)) transparent; }
+.ui-scroll:hover { scrollbar-color: rgb(var(--ui-accent, 255 77 141)) transparent; }
 .ui-scroll::-webkit-scrollbar { width: 8px; height: 8px; }
 .ui-scroll::-webkit-scrollbar-track { background: transparent; }
 .ui-scroll::-webkit-scrollbar-thumb {
@@ -86,7 +88,7 @@ html:has([data-ui-app][data-theme="light"])::-webkit-scrollbar-thumb:hover { bac
   background-clip: padding-box;
   border-radius: 999px;
 }
-.ui-scroll:hover::-webkit-scrollbar-thumb { background-color: rgb(var(--ui-accent, 74 222 128)); }
+.ui-scroll:hover::-webkit-scrollbar-thumb { background-color: rgb(var(--ui-accent, 255 77 141)); }
 /* code blocks stay dark in both themes */
 .ui-code.ui-scroll { scrollbar-color: #3a3a40 transparent; }
 .ui-code.ui-scroll::-webkit-scrollbar-thumb { background-color: #3a3a40; }

@@ -7,6 +7,7 @@ import { ArrowUpRight, Blocks, Gamepad2, LayoutTemplate, Menu, Moon, Package, Se
 import { cn } from "@/lib/utils";
 import { AUTHOR, REPO_URL, SITE_NAME } from "@/lib/site";
 import CommandPalette, { type CommandItem } from "../library/command-palette";
+import { Logo } from "./Logo";
 
 export type ChromeEntry = { slug: string; name: string; category: string; kind: string; tagline: string };
 
@@ -95,11 +96,8 @@ export default function UIChrome({ entries, children }: { entries: ChromeEntry[]
         )}
       >
         <div className="mx-auto flex h-14 max-w-7xl items-center gap-4 px-4 sm:px-6">
-          <Link href="/components" className="group flex items-center gap-2.5" aria-label="PickUI home">
-            <span className="ui-invert grid h-7 w-7 place-items-center rounded-md font-mono text-[11px] font-black tracking-tighter">PU</span>
-            <span className="ui-ink text-sm font-bold tracking-tight">
-              Pick<span className="ui-faint font-medium">/</span>UI
-            </span>
+          <Link href="/components" className="group flex items-center transition-transform hover:-rotate-3" aria-label="PickUI home">
+            <Logo />
           </Link>
 
           <nav aria-label="Library" className="ml-4 hidden items-center gap-1 md:flex">
@@ -180,9 +178,8 @@ export default function UIChrome({ entries, children }: { entries: ChromeEntry[]
       <footer className="ui-line mt-24 border-t">
         <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div>
-            <Link href="/components" className="flex items-center gap-2.5">
-              <span className="ui-invert grid h-7 w-7 place-items-center rounded-md font-mono text-[11px] font-black">PU</span>
-              <span className="ui-ink text-sm font-bold">Pick/UI</span>
+            <Link href="/components" className="inline-flex" aria-label="PickUI home">
+              <Logo size="lg" />
             </Link>
             <p className="ui-muted mt-4 max-w-xs text-sm leading-relaxed">
               Hand-crafted React + Tailwind components, blocks and templates. Zero dependencies. Install, copy, or prompt.
