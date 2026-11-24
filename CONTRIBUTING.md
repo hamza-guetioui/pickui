@@ -34,6 +34,7 @@ npm run dev   # http://localhost:3000
 
 ## Pull requests
 
+- Branch from **`dev`** and open your PR against `dev`. `main` is the released, deployed branch; `dev` is merged into it for releases.
 - One component or one fix per PR. Describe what changed and how you tested it (browser, light/dark,
   keyboard, reduced motion).
 - Don't add dependencies to library files. Docs-site dependencies need a short justification.
