@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { COMPONENTS } from "@/catalog";
 import { AUTHOR, REPO_URL, SITE_NAME, SITE_URL } from "@/lib/site";
+import TabTricks from "@/ui/TabTricks";
 import UIChrome from "@/ui/UIChrome";
 import "./globals.css";
 
@@ -36,6 +37,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning>
       <body className="font-sans antialiased">
         <UIChrome entries={entries}>{children}</UIChrome>
+        <TabTricks />
       </body>
     </html>
   );

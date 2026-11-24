@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Site-wide Tab Tricks: while the tab is in the background the favicon layers gently breathe apart and the title alternates with one short line; restored on return (reduced motion → still icon).
+
 - The catalogue is now the home page (`/`); `/components` 308-redirects there. Docs stay at `/components/<slug>`.
 
 - New brand: isometric layer-stack mark (the top layer is "picked"), favicon, README logo (`scripts/brand.mjs`).

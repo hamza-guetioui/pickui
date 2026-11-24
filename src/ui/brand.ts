@@ -48,10 +48,19 @@ export const SHAPES: Shape[] = [
 
 const kebab = (k: string) => k.replace(/[A-Z]/g, (m) => "-" + m.toLowerCase());
 
-/** Standalone SVG string (favicon / README). */
-export function markSvg() {
-  const body = SHAPES.map(
-    (s) => `<${s.tag} ${Object.entries(s.attrs).map(([k, v]) => `${kebab(k)}="${v}"`).join(" ")}/>`,
-  ).join("");
+/** Which plate each shape belongs to (0 bottom · 1 middle · 2 top · -1 guide). */
+const LAYER_OF = [0, 0, -1, 1, 1, 1, -1, 2, 2, 2, 2, 2, 2, 2];
+
+/**
+ * Standalone SVG string (favicon / README). `spread` pushes the plates apart
+ * (top up, bottom down) — used by the tab animation in TabTricks.tsx.
+ */
+export function markSvg({ spread = 0 } = {}) {
+  const body = SHAPES.map((s, i) => {
+    const layer = LAYER_OF[i] ?? -1;
+    const dy = layer === -1 ? 0 : (1 - layer) * spread;
+    const attrs = Object.entries(s.attrs).map(([k, v]) => `${kebab(k)}="${v}"`).join(" ");
+    return `<${s.tag} ${attrs}${dy ? ` transform="translate(0 ${dy})"` : ""}/>`;
+  }).join("");
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${VIEWBOX}">${body}</svg>`;
 }
