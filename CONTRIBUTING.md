@@ -17,8 +17,8 @@ npm run dev   # http://localhost:3000/components
    - Tailwind classes for layout; put custom keyframes/CSS in an inline `<style>` with a unique class prefix.
    - Support `animated` (default `true`) and `className` props, keyboard use, labels, and
      `prefers-reduced-motion`.
-2. **Preview** — register the slug in `DEMOS` in `src/ui/demos.tsx`: either `auto(() => import("../library/<slug>"))`
-   (renders it with default props) or a custom demo `src/demos/<slug>.tsx` that imports from
+2. **Preview** — register the slug in `LOADERS` in `src/ui/demos.tsx`: either `auto(() => import("../library/<slug>"))`
+   (renders it with default props) or `demo(() => import("../demos/<slug>"))` with a custom demo file that imports from
    `../library/<slug>`. A custom demo also becomes the "Usage" snippet (imports are rewritten to
    `@/components/pickui/<slug>`).
 3. **Catalogue** — add an entry in the matching file in `src/catalog/` (slug, name, exportName, category,

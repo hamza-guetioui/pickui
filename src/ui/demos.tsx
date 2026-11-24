@@ -1,41 +1,35 @@
 "use client";
 
-import dynamic from "next/dynamic";
-import type { ComponentType } from "react";
+import { lazy, type ComponentType, type LazyExoticComponent } from "react";
 
-/** Demo for components whose defaults are already a good showcase. */
-function auto(load: () => Promise<{ default: ComponentType<{ animated?: boolean }> }>) {
-  return dynamic(
-    async () => {
-      const M = (await load()).default;
-      const AutoDemo = ({ variant }: { variant?: string }) => <M animated={variant !== "regular"} />;
-      return AutoDemo;
-    },
-    { ssr: false, loading },
-  );
-}
+type DemoProps = { variant?: string };
+type DemoModule = { default: ComponentType<DemoProps> };
+type Entry = { load: () => Promise<DemoModule>; auto?: boolean };
 
-const loading = () => <div className="h-full w-full animate-pulse rounded-xl bg-[rgb(var(--ui-ink)/0.04)]" />;
+/** Custom demo file (src/demos/<slug>.tsx). */
+const demo = (load: () => Promise<unknown>): Entry => ({ load: load as Entry["load"] });
+/** No custom demo: render the library component with its defaults. */
+const auto = (load: () => Promise<unknown>): Entry => ({ load: load as Entry["load"], auto: true });
 
-/** slug → lazily loaded demo (each component is its own JS chunk). */
-export const DEMOS: Record<string, ComponentType<{ variant?: string }>> = {
-  "holo-card": dynamic(() => import("../demos/holo-card"), { ssr: false, loading }),
-  "folder-peek": dynamic(() => import("../demos/folder-peek"), { ssr: false, loading }),
-  "scroll-moon": dynamic(() => import("../demos/scroll-moon"), { ssr: false, loading }),
-  "scroll-jellyfish": dynamic(() => import("../demos/scroll-jellyfish"), { ssr: false, loading }),
-  "eiffel-dive": dynamic(() => import("../demos/eiffel-dive"), { ssr: false, loading }),
-  "haunted-room": dynamic(() => import("../demos/haunted-room"), { ssr: false, loading }),
+/** slug → demo loader (each demo is its own JS chunk). */
+export const LOADERS: Record<string, Entry> = {
+  "holo-card": demo(() => import("../demos/holo-card")),
+  "folder-peek": demo(() => import("../demos/folder-peek")),
+  "scroll-moon": demo(() => import("../demos/scroll-moon")),
+  "scroll-jellyfish": demo(() => import("../demos/scroll-jellyfish")),
+  "eiffel-dive": demo(() => import("../demos/eiffel-dive")),
+  "haunted-room": demo(() => import("../demos/haunted-room")),
   "evidence-desk": auto(() => import("../library/evidence-desk")),
-  "exploded-stack": dynamic(() => import("../demos/exploded-stack"), { ssr: false, loading }),
-  "pull-cord": dynamic(() => import("../demos/pull-cord"), { ssr: false, loading }),
-  keycaps: dynamic(() => import("../demos/keycaps"), { ssr: false, loading }),
-  "split-flap": dynamic(() => import("../demos/split-flap"), { ssr: false, loading }),
-  "neon-sign": dynamic(() => import("../demos/neon-sign"), { ssr: false, loading }),
-  "ticket-tear": dynamic(() => import("../demos/ticket-tear"), { ssr: false, loading }),
-  "scratch-card": dynamic(() => import("../demos/scratch-card"), { ssr: false, loading }),
-  "flashlight-reveal": dynamic(() => import("../demos/flashlight-reveal"), { ssr: false, loading }),
-  "receipt-printer": dynamic(() => import("../demos/receipt-printer"), { ssr: false, loading }),
-  "signal-lost": dynamic(() => import("../demos/signal-lost"), { ssr: false, loading }),
+  "exploded-stack": demo(() => import("../demos/exploded-stack")),
+  "pull-cord": demo(() => import("../demos/pull-cord")),
+  keycaps: demo(() => import("../demos/keycaps")),
+  "split-flap": demo(() => import("../demos/split-flap")),
+  "neon-sign": demo(() => import("../demos/neon-sign")),
+  "ticket-tear": demo(() => import("../demos/ticket-tear")),
+  "scratch-card": demo(() => import("../demos/scratch-card")),
+  "flashlight-reveal": demo(() => import("../demos/flashlight-reveal")),
+  "receipt-printer": demo(() => import("../demos/receipt-printer")),
+  "signal-lost": demo(() => import("../demos/signal-lost")),
   "magnetic-button": auto(() => import("../library/magnetic-button")),
   "spotlight-cards": auto(() => import("../library/spotlight-cards")),
   "aurora-input": auto(() => import("../library/aurora-input")),
@@ -89,21 +83,21 @@ export const DEMOS: Record<string, ComponentType<{ variant?: string }>> = {
   "docs-starter": auto(() => import("../library/docs-starter")),
   "agency-kinetic": auto(() => import("../library/agency-kinetic")),
   "site-shell": auto(() => import("../library/site-shell")),
-  "status-pages": dynamic(() => import("../demos/status-pages"), { ssr: false, loading }),
-  "ghost-walker": dynamic(() => import("../demos/ghost-walker"), { ssr: false, loading }),
-  "screen-pet": dynamic(() => import("../demos/screen-pet"), { ssr: false, loading }),
-  "edge-dock": dynamic(() => import("../demos/edge-dock"), { ssr: false, loading }),
-  "snow-pile": dynamic(() => import("../demos/snow-pile"), { ssr: false, loading }),
-  "page-gravity": dynamic(() => import("../demos/page-gravity"), { ssr: false, loading }),
-  "page-notes": dynamic(() => import("../demos/page-notes"), { ssr: false, loading }),
-  "shy-button": dynamic(() => import("../demos/shy-button"), { ssr: false, loading }),
-  "fireflies": dynamic(() => import("../demos/fireflies"), { ssr: false, loading }),
-  "rain-glass": dynamic(() => import("../demos/rain-glass"), { ssr: false, loading }),
-  "scroll-reward": dynamic(() => import("../demos/scroll-reward"), { ssr: false, loading }),
-  "promo-plane": dynamic(() => import("../demos/promo-plane"), { ssr: false, loading }),
-  "peek-promo": dynamic(() => import("../demos/peek-promo"), { ssr: false, loading }),
-  "exit-whisper": dynamic(() => import("../demos/exit-whisper"), { ssr: false, loading }),
-  "sponsor-flip": dynamic(() => import("../demos/sponsor-flip"), { ssr: false, loading }),
+  "status-pages": demo(() => import("../demos/status-pages")),
+  "ghost-walker": demo(() => import("../demos/ghost-walker")),
+  "screen-pet": demo(() => import("../demos/screen-pet")),
+  "edge-dock": demo(() => import("../demos/edge-dock")),
+  "snow-pile": demo(() => import("../demos/snow-pile")),
+  "page-gravity": demo(() => import("../demos/page-gravity")),
+  "page-notes": demo(() => import("../demos/page-notes")),
+  "shy-button": demo(() => import("../demos/shy-button")),
+  "fireflies": demo(() => import("../demos/fireflies")),
+  "rain-glass": demo(() => import("../demos/rain-glass")),
+  "scroll-reward": demo(() => import("../demos/scroll-reward")),
+  "promo-plane": demo(() => import("../demos/promo-plane")),
+  "peek-promo": demo(() => import("../demos/peek-promo")),
+  "exit-whisper": demo(() => import("../demos/exit-whisper")),
+  "sponsor-flip": demo(() => import("../demos/sponsor-flip")),
   "tab-tricks": auto(() => import("../library/tab-tricks")),
   "easter-eggs": auto(() => import("../library/easter-eggs")),
   "page-shatter": auto(() => import("../library/page-shatter")),
@@ -112,5 +106,49 @@ export const DEMOS: Record<string, ComponentType<{ variant?: string }>> = {
   "typing-racer": auto(() => import("../library/typing-racer")),
   "memory-flip": auto(() => import("../library/memory-flip")),
   "hue-hunt": auto(() => import("../library/hue-hunt")),
-  "command-palette": dynamic(() => import("../demos/command-palette"), { ssr: false, loading }),
+  "command-palette": demo(() => import("../demos/command-palette")),
 };
+
+const cache = new Map<string, Promise<DemoModule>>();
+
+/** Start downloading a demo's chunk (idempotent). Returns the module promise. */
+export function preloadDemo(slug: string): Promise<DemoModule> | undefined {
+  const e = LOADERS[slug];
+  if (!e) return undefined;
+  let p = cache.get(slug);
+  if (!p) {
+    p = e.load().then((m) =>
+      e.auto
+        ? {
+            default: function AutoDemo({ variant }: DemoProps) {
+              const M = m.default as ComponentType<{ animated?: boolean }>;
+              return <M animated={variant !== "regular"} />;
+            },
+          }
+        : m,
+    );
+    // a failed download can be retried later
+    p.catch(() => cache.delete(slug));
+    cache.set(slug, p);
+  }
+  return p;
+}
+
+const lazies = new Map<string, LazyExoticComponent<ComponentType<DemoProps>>>();
+
+/** React.lazy component for a slug (stable per slug), or undefined if unknown. */
+export function getDemo(slug: string) {
+  if (!LOADERS[slug]) return undefined;
+  let L = lazies.get(slug);
+  if (!L) {
+    L = lazy(() => preloadDemo(slug)!);
+    lazies.set(slug, L);
+  }
+  return L;
+}
+
+/** Forget a failed lazy so "Retry" can download it again. */
+export function resetDemo(slug: string) {
+  lazies.delete(slug);
+  cache.delete(slug);
+}

@@ -47,7 +47,7 @@ export default function ComponentsIndexView() {
             href="#browse"
             className="inline-flex items-center gap-2 rounded-full border ui-line ui-soft py-1 pl-1 pr-3 text-xs ui-muted transition hover:border-[rgb(var(--ui-ink)/0.25)]"
           >
-            <span className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-[#ff4d8d] to-[#8b5cf6] px-2 py-0.5 font-semibold text-white">
+            <span className="inline-flex items-center gap-1 rounded-full ui-invert px-2 py-0.5 font-semibold">
               <PickMark className="h-3.5 w-3.5" /> pickui
             </span>
             {COMPONENTS.length} components, blocks &amp; templates · zero dependencies

@@ -1,6 +1,6 @@
 # pickui
 
-<img src="src/app/icon.svg" width="56" alt="pickui logo — a guitar pick with a pointer" />
+<img src=".github/logo.svg" width="64" alt="pickui logo: a stack of UI layers with the top one picked up" />
 
 **Hand-crafted React + Tailwind components that AI can't one-shot** — physics, real 3D, tactile detail.
 Install one with the shadcn CLI, copy a single file, or paste an AI prompt that keeps the details intact.
@@ -46,6 +46,7 @@ src/
   ui/ views/    docs-site UI (chrome, playground, catalogue grid, docs page)
   lib/          site settings, source reader, AI-prompt builder, code highlighter
 scripts/
+  brand.mjs            regenerates favicon + README logo from src/ui/brand.ts
   check-registry.mjs   verifies catalogue ↔ files ↔ "React-only imports" contract
 ```
 

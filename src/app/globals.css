@@ -92,3 +92,20 @@ html:has([data-ui-app][data-theme="light"])::-webkit-scrollbar-thumb:hover { bac
 /* code blocks stay dark in both themes */
 .ui-code.ui-scroll { scrollbar-color: #3a3a40 transparent; }
 .ui-code.ui-scroll::-webkit-scrollbar-thumb { background-color: #3a3a40; }
+
+/* Logo: the picked (top) layer floats up a little more on hover. */
+.pu-mark-top { transition: transform .35s cubic-bezier(.2,.9,.3,1.4); }
+.pu-logo:hover .pu-mark-top, a:focus-visible .pu-mark-top { transform: translateY(-3px); }
+@media (prefers-reduced-motion: reduce) { .pu-mark-top { transition: none; } }
+
+/* Live previews: soft shimmer while loading, then a short fade/settle in. */
+.ui-stage-skeleton {
+  background: linear-gradient(110deg, transparent 30%, rgb(var(--ui-ink) / 0.04) 50%, transparent 70%) 0 0 / 250% 100%;
+  animation: ui-shimmer 1.6s linear infinite;
+}
+@keyframes ui-shimmer { to { background-position: -250% 0; } }
+.ui-stage-in { animation: ui-stage-in .45s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes ui-stage-in { from { opacity: 0; filter: blur(6px); } }
+@media (prefers-reduced-motion: reduce) {
+  .ui-stage-skeleton, .ui-stage-in { animation: none; }
+}

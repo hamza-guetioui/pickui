@@ -1,46 +1,60 @@
 import { useId } from "react";
 
+import { BRAND, PLATES } from "./brand";
+
 /**
- * PickUI brand.
- * Mark: a guitar pick (the "pick") with a pointer cut through it (the "UI"),
- * on the brand gradient pink → violet. Wordmark: lowercase "pickui", "ui" in gradient.
+ * PickUI logo: isometric layer stack with the top layer lifted (see brand.ts)
+ * + lowercase "pickui" wordmark with "ui" in the brand gradient.
  */
-export const BRAND = { pink: "#ff4d8d", violet: "#8b5cf6", ink: "#0b0b10" } as const;
-
-/** Guitar-pick outline (viewBox 0 0 64 64). */
-export const PICK_PATH =
-  "M32 3.5c15.6 0 27.5 6.4 27.5 19 0 15.3-14.7 30.6-24.6 37.4a5.1 5.1 0 0 1-5.8 0C19.2 53.1 4.5 37.8 4.5 22.5 4.5 9.9 16.4 3.5 32 3.5Z";
-/** Pointer cursor, tip at the pick's sweet spot. */
-export const CURSOR_PATH = "M25 15.5v27.2l7.1-6.6 4.6 10.4 5-2.2-4.6-10.2 9.6-.4L25 15.5Z";
-
 export function PickMark({ className = "h-7 w-7", title }: { className?: string; title?: string }) {
   const id = useId().replace(/:/g, "");
+  const { bottom: b, middle: m, top: t } = PLATES;
   return (
-    <svg viewBox="0 0 64 64" className={className} role={title ? "img" : undefined} aria-hidden={title ? undefined : true} aria-label={title}>
+    <svg
+      viewBox="4 6 56 56"
+      className={`pu-mark overflow-visible ${className}`}
+      role={title ? "img" : undefined}
+      aria-hidden={title ? undefined : true}
+      aria-label={title}
+    >
       <defs>
-        <linearGradient id={`${id}g`} x1="8" y1="4" x2="56" y2="60" gradientUnits="userSpaceOnUse">
+        <linearGradient id={`${id}g`} x1="9" y1="8" x2="55" y2="31" gradientUnits="userSpaceOnUse">
           <stop stopColor={BRAND.pink} />
           <stop offset="1" stopColor={BRAND.violet} />
         </linearGradient>
-        <linearGradient id={`${id}s`} x1="32" y1="4" x2="32" y2="34" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#fff" stopOpacity=".45" />
-          <stop offset="1" stopColor="#fff" stopOpacity="0" />
-        </linearGradient>
       </defs>
-      <path d={PICK_PATH} fill={`url(#${id}g)`} />
-      {/* sheen, like a real celluloid pick */}
-      <path d="M32 7c-12 0-22.6 4.6-23.9 13.6C14 15 22 12.6 32 12.6S50 15 55.9 20.6C54.6 11.6 44 7 32 7Z" fill={`url(#${id}s)`} />
-      <path d={CURSOR_PATH} fill="#fff" stroke={BRAND.ink} strokeOpacity=".35" strokeWidth="1.2" strokeLinejoin="round" />
+      {/* lower layers follow the text colour so they work on light and dark */}
+      {[b, m].map((p, i) => (
+        <g key={i} stroke="currentColor" strokeWidth="2" strokeLinejoin="round" opacity={i ? 0.55 : 0.28}>
+          <path d={p.left} fill="currentColor" fillOpacity=".7" />
+          <path d={p.right} fill="currentColor" fillOpacity=".45" />
+          <path d={p.top} fill="currentColor" />
+        </g>
+      ))}
+      <path
+        d="M32 31.5V37.5M9 19.5V36M55 19.5V36"
+        stroke="currentColor"
+        strokeOpacity=".4"
+        strokeWidth="1.4"
+        strokeDasharray="1.6 2.2"
+        strokeLinecap="round"
+      />
+      <g className="pu-mark-top" strokeLinejoin="round" strokeWidth="2">
+        <path d={t.left} fill="#c0266a" stroke="#c0266a" />
+        <path d={t.right} fill="#6d3fd6" stroke="#6d3fd6" />
+        <path d={t.top} fill={`url(#${id}g)`} stroke={`url(#${id}g)`} />
+        <path d={t.inset} fill="none" stroke="#fff" strokeOpacity=".7" strokeWidth="1.6" />
+      </g>
     </svg>
   );
 }
 
-/** Mark + "pickui" wordmark. */
+/** Mark + "pickui" wordmark. The top layer lifts a little more on hover. */
 export function Logo({ className = "", size = "md" }: { className?: string; size?: "md" | "lg" }) {
   const lg = size === "lg";
   return (
-    <span className={`inline-flex items-center gap-2 ${className}`}>
-      <PickMark className={lg ? "h-9 w-9" : "h-7 w-7"} />
+    <span className={`pu-logo inline-flex items-center gap-2 ${className}`}>
+      <PickMark className={`ui-ink ${lg ? "h-9 w-9" : "h-7 w-7"}`} />
       <span className={`font-black lowercase leading-none tracking-[-0.06em] ui-ink ${lg ? "text-2xl" : "text-[19px]"}`}>
         pick
         <span className="bg-gradient-to-r from-[#ff4d8d] to-[#8b5cf6] bg-clip-text text-transparent">ui</span>

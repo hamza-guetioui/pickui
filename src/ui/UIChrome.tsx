@@ -96,7 +96,7 @@ export default function UIChrome({ entries, children }: { entries: ChromeEntry[]
         )}
       >
         <div className="mx-auto flex h-14 max-w-7xl items-center gap-4 px-4 sm:px-6">
-          <Link href="/components" className="group flex items-center transition-transform hover:-rotate-3" aria-label="PickUI home">
+          <Link href="/components" className="group flex items-center" aria-label="PickUI home">
             <Logo />
           </Link>
 
