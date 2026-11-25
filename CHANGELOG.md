@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- **Search (⌘K):** fixed-height panel, “Try” suggestion chips, recently opened items first, typo-tolerant “Closest matches”, close and clear buttons, kind icons and taglines on every result. Command Palette gains optional `suggestions`, `recentKey` and item `description`.
+- **Header:** GitHub button has the GitHub icon (icon-only on tablet). A top bar and a “Preparing page…” pill show while a page is loading after a click.
+
+- **Extension pages are download-only:** a clear **Download ZIP** button (`/download/<slug>.zip`: source file(s) + README with usage and props) and the live preview. No code tab, AI prompt, CLI or v0 on extension pages.
+
 - **Packages → Extensions.** The section is now *Extensions* (drop-in page layers). Kept and rebuilt: Ghost Walker (translucent ghosts that hide behind screen edges, page-interaction mode, prankster mode with 10×3 reactions), Tab Tricks (fun + useful versions), Fireflies (fireflies, snow, paper and leaves with real-world physics and shadows). Removed: Screen Pet, Edge Dock, Snow Pile, Page Gravity, Page Notes, Shy Button, Easter Eggs, Rain Glass, Page Shatter, Promo Plane, Peek Promo, Scroll Reward, Exit Whisper, Sponsor Flip.
 
 - Games replaced: Bug Runner, Snake.dev, Ship It!, Brick Breaker, Pong and Bug Invaders (ported from guetix.com, restyled "neon night") on a shared `arcade-cabinet` shell. Removed: F1 Reaction Lights, Typing Racer, Hue Hunt.

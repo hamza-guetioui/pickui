@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { ArrowUpRight, Blocks, Gamepad2, LayoutTemplate, Menu, Moon, Puzzle, Search, Shapes, Sun, X } from "lucide-react";
+import { ArrowUpRight, Blocks, Gamepad2, Github, LayoutTemplate, Loader2, Menu, Moon, Puzzle, Search, Shapes, Sun, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AUTHOR, REPO_URL, SITE_NAME } from "@/lib/site";
 import CommandPalette, { type CommandItem } from "../library/command-palette";
@@ -22,6 +22,8 @@ const NAV = [
   { href: "/?kind=extension#browse", kind: "extension", label: "Extensions", icon: Puzzle },
   { href: "/?kind=game#browse", kind: "game", label: "Games", icon: Gamepad2 },
 ];
+const KIND_ICON = Object.fromEntries(NAV.map((n) => [n.kind, n.icon]));
+const SUGGESTIONS = ["Button", "Card", "Text", "Pricing", "3D", "Games", "Retro"];
 
 /**
  * PickUI site chrome: sticky header with ⌘K
@@ -35,6 +37,26 @@ export default function UIChrome({ entries, children }: { entries: ChromeEntry[]
   const [search, setSearch] = useState(false);
   const [menu, setMenu] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [navigating, setNavigating] = useState(false);
+
+  // Show feedback as soon as an internal link to another page is clicked (capture phase: before Link's preventDefault).
+  useEffect(() => {
+    const onClick = (e: MouseEvent) => {
+      if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      const a = (e.target as Element | null)?.closest?.("a");
+      if (!a || (a.target && a.target !== "_self") || a.hasAttribute("download")) return;
+      const url = new URL(a.href, location.href);
+      if (url.origin === location.origin && url.pathname !== location.pathname) setNavigating(true);
+    };
+    document.addEventListener("click", onClick, true);
+    return () => document.removeEventListener("click", onClick, true);
+  }, []);
+  useEffect(() => setNavigating(false), [pathname]);
+  useEffect(() => {
+    if (!navigating) return;
+    const t = setTimeout(() => setNavigating(false), 15000); // never stick if a navigation is cancelled
+    return () => clearTimeout(t);
+  }, [navigating]);
 
   useEffect(() => {
     let saved: string | null = null;
@@ -66,7 +88,12 @@ export default function UIChrome({ entries, children }: { entries: ChromeEntry[]
         label: e.name,
         group: { block: "Blocks", template: "Templates", extension: "Extensions", game: "Games" }[e.kind] ?? "Components",
         hint: e.category,
-        keywords: [e.tagline, e.category],
+        description: e.tagline,
+        keywords: [e.tagline, e.category, e.kind],
+        icon: (() => {
+          const Icon = KIND_ICON[e.kind] ?? Shapes;
+          return <Icon className="h-3.5 w-3.5" aria-hidden />;
+        })(),
       })),
       { id: "nav:theme", label: "Toggle light / dark theme", group: "Actions" },
       { id: "nav:home", label: `${SITE_NAME} home`, group: "Actions" },
@@ -77,9 +104,10 @@ export default function UIChrome({ entries, children }: { entries: ChromeEntry[]
 
   const onSelect = (it: CommandItem) => {
     if (it.id === "nav:theme") return toggleTheme();
-    if (it.id === "nav:home") return router.push("/");
     if (it.id === "nav:github") return void window.open(REPO_URL, "_blank", "noopener,noreferrer");
-    router.push(`/components/${it.id}`);
+    const href = it.id === "nav:home" ? "/" : `/components/${it.id}`;
+    if (href !== pathname) setNavigating(true);
+    router.push(href);
   };
 
   const counts = (k: string) => entries.filter((e) => e.kind === k).length;
@@ -88,6 +116,15 @@ export default function UIChrome({ entries, children }: { entries: ChromeEntry[]
   return (
     <div ref={rootRef} data-ui-app="" data-theme={theme} className="min-h-screen" suppressHydrationWarning>
       <script dangerouslySetInnerHTML={{ __html: THEME_BOOT }} />
+
+      {navigating && (
+        <>
+          <div className="ui-nav-bar fixed inset-x-0 top-0 z-[60] h-0.5" aria-hidden />
+          <div role="status" className="ui-nav-pill ui-line fixed bottom-5 right-5 z-[60] flex items-center gap-2 rounded-full border bg-[rgb(var(--ui-bg)/0.9)] px-3.5 py-1.5 text-xs font-medium shadow-lg backdrop-blur-xl ui-ink">
+            <Loader2 className="ui-accent h-3.5 w-3.5 animate-spin" aria-hidden /> Preparing page…
+          </div>
+        </>
+      )}
 
       <header
         className={cn(
@@ -141,9 +178,23 @@ export default function UIChrome({ entries, children }: { entries: ChromeEntry[]
               href={REPO_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="ui-invert hidden h-9 items-center gap-1 rounded-lg px-3 text-sm font-semibold transition hover:opacity-85 lg:inline-flex"
+              aria-label="GitHub"
+              title="Source on GitHub"
+              className="ui-invert hidden h-9 w-9 place-items-center rounded-lg transition hover:-translate-y-px hover:shadow-[0_0_0_3px_rgb(var(--ui-accent)/0.35),0_8px_24px_-8px_rgb(var(--ui-accent)/0.7)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--ui-accent))] motion-reduce:hover:translate-y-0 sm:grid lg:hidden"
             >
-              GitHub <ArrowUpRight className="h-3.5 w-3.5" aria-hidden />
+              <Github className="h-[18px] w-[18px]" aria-hidden />
+            </a>
+            <a
+              href={REPO_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group ui-invert hidden h-9 items-center gap-2 rounded-lg pl-1.5 pr-3 text-sm font-semibold transition hover:-translate-y-px hover:shadow-[0_0_0_3px_rgb(var(--ui-accent)/0.35),0_8px_24px_-8px_rgb(var(--ui-accent)/0.7)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--ui-accent))] motion-reduce:hover:translate-y-0 lg:inline-flex"
+            >
+              <span className="grid h-6 w-6 place-items-center rounded-md bg-[rgb(var(--ui-bg))] text-[rgb(var(--ui-ink))] transition-transform duration-300 group-hover:-rotate-12 group-hover:scale-110 motion-reduce:transform-none">
+                <Github className="h-3.5 w-3.5" aria-hidden />
+              </span>
+              GitHub
+              <ArrowUpRight className="h-3.5 w-3.5 opacity-50 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:opacity-100 motion-reduce:transform-none" aria-hidden />
             </a>
             <button
               type="button"
@@ -167,7 +218,7 @@ export default function UIChrome({ entries, children }: { entries: ChromeEntry[]
               </Link>
             ))}
             <a href={REPO_URL} target="_blank" rel="noopener noreferrer" className="ui-muted ui-hover mt-1 flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm">
-              <ArrowUpRight className="h-4 w-4" aria-hidden /> Source on GitHub
+              <Github className="h-4 w-4" aria-hidden /> Source on GitHub
             </a>
           </nav>
         )}
@@ -220,7 +271,7 @@ export default function UIChrome({ entries, children }: { entries: ChromeEntry[]
         </div>
       </footer>
 
-      <CommandPalette items={items} onSelect={onSelect} open={search} onOpenChange={setSearch} placeholder="Search components, blocks, templates…" />
+      <CommandPalette items={items} onSelect={onSelect} open={search} onOpenChange={setSearch} placeholder="Search components, blocks, templates…" suggestions={SUGGESTIONS} recentKey="pickui-recent" />
     </div>
   );
 }

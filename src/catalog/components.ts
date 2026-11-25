@@ -422,7 +422,7 @@ export const MORE: ComponentEntry[] = [
     description: "Bring your own items and handle onSelect. Fuzzy scoring prefers consecutive and word-start matches. This exact component powers search on this site (press ⌘K).",
     craft: ["Subsequence scoring with bonuses for consecutive and word-start hits.", "Restores focus to where you were when it closes."],
     useCases: ["App search", "Docs", "Admin dashboards"],
-    props: [p("items", "{ id; label; group?; hint?; keywords?; icon? }[]", "Commands."), p("onSelect", "(item) => void", "Handler."), p("open / onOpenChange", "boolean", "Controlled state."), p("hotkey", "string | null", "Letter with ⌘/Ctrl.", '"k"')],
+    props: [p("items", "{ id; label; group?; hint?; description?; keywords?; icon? }[]", "Commands."), p("onSelect", "(item) => void", "Handler."), p("open / onOpenChange", "boolean", "Controlled state."), p("hotkey", "string | null", "Letter with ⌘/Ctrl.", '"k"'), p("suggestions", "string[]", "Quick-search chips shown while the query is empty."), p("recentKey", "string", "localStorage key: remembers the last 5 picks and lists them first.")],
     a11y: ["Dialog + combobox/listbox pattern with aria-activedescendant."],
     tags: ["search", "cmdk", "keyboard", "palette"],
     previewHeight: 300,

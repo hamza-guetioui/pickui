@@ -14,6 +14,8 @@ export type CommandItem = {
   label: string;
   group?: string;
   hint?: string;
+  /** Optional second line under the label. */
+  description?: string;
   keywords?: string[];
   icon?: React.ReactNode;
 };
@@ -31,6 +33,10 @@ export type CommandPaletteProps = {
   animated?: boolean;
   /** Render the default trigger button (default true when uncontrolled). */
   trigger?: boolean;
+  /** Quick searches shown as chips while the query is empty. */
+  suggestions?: string[];
+  /** localStorage key to remember recently picked items (shown first). Off when omitted. */
+  recentKey?: string;
 };
 
 const css = `
@@ -61,6 +67,35 @@ function score(q: string, text: string): { s: number; hits: number[] } | null {
   return { s: s - t.length * 0.01, hits };
 }
 
+/** Edit-distance similarity of two words, 0–1. */
+function sim(a: string, b: string): number {
+  let prev = Array.from({ length: b.length + 1 }, (_, j) => j);
+  for (let i = 1; i <= a.length; i++) {
+    const cur = [i];
+    for (let j = 1; j <= b.length; j++) cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    prev = cur;
+  }
+  return 1 - prev[b.length] / Math.max(a.length, b.length, 1);
+}
+
+/** Typo-tolerant fallback: each query word vs. its closest word in the text (0–1). */
+function near(q: string, text: string): number {
+  const qs = q.toLowerCase().split(/[\s\-_/]+/).filter(Boolean);
+  const ws = text.toLowerCase().split(/[^\p{L}\p{N}]+/u).filter(Boolean);
+  if (!qs.length || !ws.length) return 0;
+  return qs.reduce((n, w) => n + Math.max(...ws.map((x) => sim(w, x))), 0) / qs.length;
+}
+
+const readRecent = (key?: string): string[] => {
+  if (!key) return [];
+  try {
+    const v = JSON.parse(localStorage.getItem(key) ?? "[]");
+    return Array.isArray(v) ? v.filter((x) => typeof x === "string") : [];
+  } catch {
+    return [];
+  }
+};
+
 export function CommandPalette({
   items,
   onSelect,
@@ -70,7 +105,10 @@ export function CommandPalette({
   placeholder = "Search…",
   animated = true,
   trigger,
+  suggestions = [],
+  recentKey,
 }: CommandPaletteProps) {
+  const [recent, setRecent] = React.useState<string[]>([]);
   const [inner, setInner] = React.useState(false);
   const isOpen = open ?? inner;
   const setOpen = React.useCallback(
@@ -104,12 +142,13 @@ export function CommandPalette({
       restore.current = document.activeElement as HTMLElement | null;
       setQ("");
       setActive(0);
+      setRecent(readRecent(recentKey));
       requestAnimationFrame(() => input.current?.focus());
     } else restore.current?.focus?.();
-  }, [isOpen]);
+  }, [isOpen, recentKey]);
 
   const results = React.useMemo(() => {
-    return items
+    const exact = items
       .map((it) => {
         const main = score(q, it.label);
         const hay = [it.group, it.hint, ...(it.keywords ?? [])].join(" ").toLowerCase();
@@ -119,16 +158,25 @@ export function CommandPalette({
       })
       .filter((x): x is NonNullable<typeof x> => x !== null)
       .sort((a, b) => (q ? b.s - a.s : 0));
-  }, [items, q]);
+    if (!q) {
+      // recent picks float to the top in their own group
+      const rec = recent.map((id) => exact.find((r) => r.it.id === id)).filter((r): r is (typeof exact)[number] => !!r);
+      return [...rec.map((r) => ({ ...r, g: "Recent" })), ...exact.filter((r) => !recent.includes(r.it.id)).map((r) => ({ ...r, g: r.it.group ?? "Items" }))];
+    }
+    if (exact.length) return exact.map((r) => ({ ...r, g: "Results" }));
+    return items
+      .map((it) => ({ it, s: Math.max(near(q, it.label), 0.8 * near(q, [it.hint, ...(it.keywords ?? [])].join(" "))), hits: [] as number[], g: "Closest matches" }))
+      .filter((r) => r.s >= 0.5)
+      .sort((a, b) => b.s - a.s)
+      .slice(0, 6);
+  }, [items, q, recent]);
+  const closest = !!q && results[0]?.g === "Closest matches";
 
   const groups = React.useMemo(() => {
     const m = new Map<string, typeof results>();
-    results.forEach((r) => {
-      const g = q ? "Results" : r.it.group ?? "Items";
-      m.set(g, [...(m.get(g) ?? []), r]);
-    });
+    results.forEach((r) => m.set(r.g, [...(m.get(r.g) ?? []), r]));
     return [...m.entries()];
-  }, [results, q]);
+  }, [results]);
   const flat = groups.flatMap(([, r]) => r);
 
   React.useEffect(() => {
@@ -137,11 +185,17 @@ export function CommandPalette({
 
   const choose = (it?: CommandItem) => {
     if (!it) return;
+    if (recentKey) {
+      try {
+        localStorage.setItem(recentKey, JSON.stringify([it.id, ...readRecent(recentKey).filter((x) => x !== it.id)].slice(0, 5)));
+      } catch {}
+    }
     setOpen(false);
     onSelect(it);
   };
 
   const onKeyDown = (e: React.KeyboardEvent) => {
+    if (e.target !== input.current && e.key !== "Escape") return; // let chips / buttons handle their own keys
     if (e.key === "ArrowDown") {
       e.preventDefault();
       setActive((a) => Math.min(flat.length - 1, a + 1));
@@ -185,7 +239,7 @@ export function CommandPalette({
             role="dialog"
             aria-modal="true"
             aria-label="Command palette"
-            className="gx-cp-panel relative w-full max-w-xl overflow-hidden rounded-2xl border border-white/10 bg-[#111113] text-white shadow-[0_30px_80px_-20px_rgba(0,0,0,.9)]"
+            className="gx-cp-panel relative flex h-[min(560px,76vh)] w-full max-w-xl flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#111113] text-white shadow-[0_30px_80px_-20px_rgba(0,0,0,.9)]"
           >
             <div className="flex items-center gap-3 border-b border-white/10 px-4">
               <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 text-white/40" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
@@ -207,11 +261,54 @@ export function CommandPalette({
                 aria-autocomplete="list"
                 className="h-14 flex-1 bg-transparent text-[15px] text-white placeholder:text-white/35 focus:outline-none"
               />
-              <kbd className="rounded border border-white/15 px-1.5 py-0.5 font-mono text-[10px] text-white/40">esc</kbd>
+              {q && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setQ("");
+                    setActive(0);
+                    input.current?.focus();
+                  }}
+                  className="rounded-md px-2 py-1 text-xs text-white/50 transition hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+                >
+                  Clear
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                aria-label="Close search"
+                className="grid h-8 w-8 place-items-center rounded-lg border border-white/10 text-white/50 transition hover:border-white/25 hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+              >
+                <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
+                  <path d="M6 6l12 12M18 6 6 18" />
+                </svg>
+              </button>
             </div>
 
-            <div ref={list} id={`${uid}-list`} role="listbox" className="max-h-[50vh] overflow-y-auto p-2 [scrollbar-width:thin]">
+            {!q && suggestions.length > 0 && (
+              <div className="flex flex-wrap items-center gap-1.5 border-b border-white/10 px-4 py-3">
+                <span className="mr-1 font-mono text-[10px] uppercase tracking-[0.2em] text-white/35">Try</span>
+                {suggestions.map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => {
+                      setQ(s);
+                      setActive(0);
+                      input.current?.focus();
+                    }}
+                    className="rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-xs text-white/70 transition hover:border-emerald-400/50 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            <div ref={list} id={`${uid}-list`} role="listbox" className="min-h-0 flex-1 overflow-y-auto p-2 [scrollbar-width:thin]">
               {flat.length === 0 && <p className="px-3 py-10 text-center text-sm text-white/40">No results for “{q}”.</p>}
+              {closest && <p className="px-3 pt-2 text-sm text-white/50">No exact match for “{q}”. Did you mean…</p>}
               {groups.map(([g, rs]) => (
                 <div key={g} role="presentation">
                   <p className="px-3 pb-1 pt-3 font-mono text-[10px] uppercase tracking-[0.2em] text-white/35">{g}</p>
@@ -232,7 +329,8 @@ export function CommandPalette({
                       >
                         {on && <span aria-hidden className="absolute inset-y-2 left-0 w-0.5 rounded-full bg-emerald-400" />}
                         {r.it.icon && <span className="grid h-7 w-7 shrink-0 place-items-center rounded-md border border-white/10 bg-white/[0.04] text-white/70">{r.it.icon}</span>}
-                        <span className="min-w-0 flex-1 truncate">
+                        <span className="min-w-0 flex-1">
+                          <span className="block truncate">
                           {[...r.it.label].map((ch, k) =>
                             r.hits.includes(k) ? (
                               <mark key={k} className="bg-transparent font-semibold text-emerald-300">
@@ -242,8 +340,10 @@ export function CommandPalette({
                               <React.Fragment key={k}>{ch}</React.Fragment>
                             ),
                           )}
+                          </span>
+                          {r.it.description && <span className="mt-0.5 block truncate text-xs text-white/40">{r.it.description}</span>}
                         </span>
-                        {r.it.hint && <span className="shrink-0 truncate text-xs text-white/40">{r.it.hint}</span>}
+                        {r.it.hint && <span className="shrink-0 truncate rounded-full border border-white/10 px-2 py-0.5 text-[11px] text-white/45">{r.it.hint}</span>}
                         {on && <span className="shrink-0 font-mono text-[10px] text-white/40">↵</span>}
                       </div>
                     );
@@ -252,12 +352,29 @@ export function CommandPalette({
               ))}
             </div>
 
-            <div className="flex items-center justify-between border-t border-white/10 px-4 py-2 font-mono text-[10px] text-white/40">
-              <span aria-live="polite">{flat.length} results</span>
-              <span className="flex gap-3">
-                <span>↑↓ navigate</span>
-                <span>↵ open</span>
-                <span>esc close</span>
+            <div className="flex items-center justify-between gap-3 border-t border-white/10 bg-white/[0.02] px-4 py-2.5">
+              <span aria-live="polite" className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 font-mono text-[11px] text-white/60">
+                <span aria-hidden className={`h-1.5 w-1.5 rounded-full ${flat.length ? "bg-emerald-400" : "bg-white/25"}`} />
+                {flat.length}
+                <span className="sr-only"> result{flat.length === 1 ? "" : "s"}</span>
+              </span>
+              <span className="flex items-center gap-3" aria-hidden>
+                {[
+                  { keys: ["↑", "↓"], title: "Navigate" },
+                  { keys: ["↵"], title: "Open" },
+                  { keys: ["esc"], title: "Close" },
+                ].map((g) => (
+                  <span key={g.title} title={g.title} className="flex gap-1">
+                    {g.keys.map((k) => (
+                      <kbd
+                        key={k}
+                        className="grid h-6 min-w-6 place-items-center rounded-md border border-white/15 border-b-white/25 bg-gradient-to-b from-white/[0.08] to-white/[0.02] px-1.5 font-mono text-[11px] text-white/70 shadow-[inset_0_-2px_0_rgba(0,0,0,.4)]"
+                      >
+                        {k}
+                      </kbd>
+                    ))}
+                  </span>
+                ))}
               </span>
             </div>
           </div>
