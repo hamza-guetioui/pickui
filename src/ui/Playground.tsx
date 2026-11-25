@@ -45,7 +45,7 @@ export default function Playground({
     { id: "preview", label: "Preview", icon: Eye },
     { id: "code", label: "Code", icon: Code2 },
     { id: "prompt", label: "Prompt", icon: Sparkles },
-  ];
+  ].filter((x) => x.id === "preview" || (x.id === "code" ? code : prompt)) as { id: View; label: string; icon: typeof Eye }[];
 
   return (
     <div className="overflow-hidden rounded-xl border ui-line ui-surface">

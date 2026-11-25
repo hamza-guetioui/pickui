@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, Check, ExternalLink } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Download, ExternalLink } from "lucide-react";
 import { buildPrompt } from "../lib/prompt";
 import { CATEGORY_ORDER, COMPONENTS, KIND_LABEL, KIND_ORDER, installCommand, installPath, registryUrl, variantsFor, type ComponentEntry } from "../catalog";
 import { readComponentSource, readUsageSource } from "../lib/source";
@@ -80,6 +80,9 @@ export default function ComponentDocView({ c }: { c: ComponentEntry }) {
   const idx = COMPONENTS.findIndex((x) => x.slug === c.slug);
   const prev = COMPONENTS[idx - 1];
   const next = COMPONENTS[idx + 1];
+  // Extensions are download-only: ZIP + live preview, no code/prompt/CLI.
+  const ext = c.kind === "extension";
+  const zipHref = `/download/${c.slug}.zip`;
 
   return (
     <div className="grid gap-10 pt-8 lg:grid-cols-[210px_minmax(0,1fr)]">
@@ -106,6 +109,20 @@ export default function ComponentDocView({ c }: { c: ComponentEntry }) {
           ))}
         </ul>
 
+        {ext ? (
+          <div className="mt-6">
+            <a
+              href={zipHref}
+              download
+              className="ui-invert inline-flex items-center gap-2 rounded-lg px-5 py-3 text-sm font-semibold transition hover:opacity-85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--ui-ink)/0.5)]"
+            >
+              <Download className="h-4 w-4" aria-hidden /> Download ZIP
+            </a>
+            <p className="mt-2 text-xs ui-faint">
+              {c.slug}.zip · source file{c.includes?.length ? "s" : ""} + README with usage and props
+            </p>
+          </div>
+        ) : (
         <div className="mt-6 flex flex-wrap gap-2">
           <CopyButton text={prompt} label="Copy AI prompt" copiedLabel="Prompt copied" className="ui-invert border-transparent hover:opacity-85" />
           <CopyButton text={source} label="Copy code" />
@@ -118,6 +135,7 @@ export default function ComponentDocView({ c }: { c: ComponentEntry }) {
             Open in v0 <ExternalLink className="h-3 w-3" aria-hidden />
           </a>
         </div>
+        )}
 
         {/* preview */}
         <section className="mt-10" aria-labelledby="preview">
@@ -130,13 +148,25 @@ export default function ComponentDocView({ c }: { c: ComponentEntry }) {
               fill={c.fill}
               scroll={c.kind === "template"}
               variants={variantsFor(c)}
-              prompt={prompt}
-              code={<Code code={source} filename={installPath(c.slug)} />}
+              prompt={ext ? undefined : prompt}
+              code={ext ? undefined : <Code code={source} filename={installPath(c.slug)} />}
             />
           <p className="mt-4 text-sm leading-relaxed ui-muted">{c.description}</p>
         </section>
 
+        {ext && (
+          <section className="mt-14 space-y-4">
+            <H2 id="installation">Installation</H2>
+            <ol className="space-y-2 text-sm ui-muted">
+              <li><span className="mr-2 font-mono ui-faint">1.</span><a href={zipHref} download className="font-medium ui-ink underline underline-offset-4">Download {c.slug}.zip</a> and unzip it.</li>
+              <li><span className="mr-2 font-mono ui-faint">2.</span>Copy the <code className="rounded ui-soft px-1 font-mono text-xs">.tsx</code> file into <code className="rounded ui-soft px-1 font-mono text-xs">components/pickui/</code> (Tailwind CSS required).</li>
+              <li><span className="mr-2 font-mono ui-faint">3.</span>Follow the README inside for usage.</li>
+            </ol>
+          </section>
+        )}
+
         {/* installation */}
+        {!ext && (
         <section className="mt-14 space-y-4">
           <H2 id="installation">Installation</H2>
           <Tabs
@@ -211,8 +241,10 @@ export default function ComponentDocView({ c }: { c: ComponentEntry }) {
             ]}
           />
         </section>
+        )}
 
         {/* usage */}
+        {!ext && (
         <section className="mt-14 space-y-4">
           <H2 id="usage">Usage</H2>
           <Code code={usage} filename="example.tsx" />
@@ -224,6 +256,7 @@ export default function ComponentDocView({ c }: { c: ComponentEntry }) {
             ))}
           </div>
         </section>
+        )}
 
         {/* craft */}
         {(c.craft?.length ?? 0) > 0 && (
