@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { ArrowUpRight, Blocks, Gamepad2, LayoutTemplate, Menu, Moon, Package, Search, Shapes, Sun, X } from "lucide-react";
+import { ArrowUpRight, Blocks, Gamepad2, LayoutTemplate, Menu, Moon, Puzzle, Search, Shapes, Sun, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AUTHOR, REPO_URL, SITE_NAME } from "@/lib/site";
 import CommandPalette, { type CommandItem } from "../library/command-palette";
@@ -19,7 +19,7 @@ const NAV = [
   { href: "/?kind=component#browse", kind: "component", label: "Components", icon: Shapes },
   { href: "/?kind=block#browse", kind: "block", label: "Blocks", icon: Blocks },
   { href: "/?kind=template#browse", kind: "template", label: "Templates", icon: LayoutTemplate },
-  { href: "/?kind=package#browse", kind: "package", label: "Packages", icon: Package },
+  { href: "/?kind=extension#browse", kind: "extension", label: "Extensions", icon: Puzzle },
   { href: "/?kind=game#browse", kind: "game", label: "Games", icon: Gamepad2 },
 ];
 
@@ -64,7 +64,7 @@ export default function UIChrome({ entries, children }: { entries: ChromeEntry[]
       ...entries.map((e) => ({
         id: e.slug,
         label: e.name,
-        group: { block: "Blocks", template: "Templates", package: "Packages", game: "Games" }[e.kind] ?? "Components",
+        group: { block: "Blocks", template: "Templates", extension: "Extensions", game: "Games" }[e.kind] ?? "Components",
         hint: e.category,
         keywords: [e.tagline, e.category],
       })),

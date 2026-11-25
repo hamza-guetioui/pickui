@@ -30,7 +30,7 @@ export type ComponentCategory =
   | "Games"
   | "Pages";
 
-export type ComponentKind = "component" | "block" | "template" | "package" | "game";
+export type ComponentKind = "component" | "block" | "template" | "extension" | "game";
 
 export const CATEGORY_ORDER: ComponentCategory[] = [
   "Essentials",
@@ -51,8 +51,8 @@ export const CATEGORY_ORDER: ComponentCategory[] = [
   "Pages",
 ];
 
-export const KIND_LABEL: Record<ComponentKind, string> = { component: "Components", block: "Blocks", template: "Templates", package: "Packages", game: "Games" };
-export const KIND_ORDER: ComponentKind[] = ["component", "block", "template", "package", "game"];
+export const KIND_LABEL: Record<ComponentKind, string> = { component: "Components", block: "Blocks", template: "Templates", extension: "Extensions", game: "Games" };
+export const KIND_ORDER: ComponentKind[] = ["component", "block", "template", "extension", "game"];
 
 export type PropDoc = { name: string; type: string; default?: string; description: string };
 
@@ -78,9 +78,9 @@ export type ComponentEntry = {
   category: ComponentCategory;
   /** Component (default), block (a full section) or template (a full page). */
   kind?: ComponentKind;
-  /** Future npm package name (packages & games). */
+  /** Future npm package name (extensions & games). */
   npm?: string;
-  /** Framework-agnostic usage example (packages). */
+  /** Framework-agnostic usage example (extensions). */
   vanilla?: string;
   /** Hand-written usage example (overrides the demo file). */
   usage?: string;

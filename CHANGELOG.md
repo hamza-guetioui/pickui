@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Packages → Extensions.** The section is now *Extensions* (drop-in page layers). Kept and rebuilt: Ghost Walker (translucent ghosts that hide behind screen edges, page-interaction mode, prankster mode with 10×3 reactions), Tab Tricks (fun + useful versions), Fireflies (fireflies, snow, paper and leaves with real-world physics and shadows). Removed: Screen Pet, Edge Dock, Snow Pile, Page Gravity, Page Notes, Shy Button, Easter Eggs, Rain Glass, Page Shatter, Promo Plane, Peek Promo, Scroll Reward, Exit Whisper, Sponsor Flip.
+
 - Games replaced: Bug Runner, Snake.dev, Ship It!, Brick Breaker, Pong and Bug Invaders (ported from guetix.com, restyled "neon night") on a shared `arcade-cabinet` shell. Removed: F1 Reaction Lights, Typing Racer, Hue Hunt.
 - Stack Tower reimagined: glass slabs, ghost guide, combo chimes + sparks, altitude zones (City → Clouds → Stratosphere → Orbit), cinematic pull-back on game over, optional sound/haptics.
 - Memory Flip reimagined: holographic tilt cards, start peek, light beams between pairs, streak multipliers, hints, 4 growing levels, best score, arrow-key navigation.
