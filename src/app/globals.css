@@ -105,3 +105,16 @@ html:has([data-ui-app][data-theme="light"])::-webkit-scrollbar-thumb:hover { bac
 @media (prefers-reduced-motion: reduce) {
   .ui-stage-skeleton, .ui-stage-in { animation: none; }
 }
+
+/* Route change feedback: indeterminate top bar + "Preparing page" pill. */
+.ui-nav-bar {
+  background: linear-gradient(90deg, transparent, rgb(var(--ui-accent)), rgb(var(--ui-accent-2)), transparent) 0 0 / 50% 100% no-repeat;
+  animation: ui-nav-bar 1.1s cubic-bezier(.4,0,.2,1) infinite;
+}
+@keyframes ui-nav-bar { from { background-position: -50% 0; } to { background-position: 150% 0; } }
+.ui-nav-pill { animation: ui-stage-in .25s cubic-bezier(.2,.8,.2,1) .15s both; }
+@media (prefers-reduced-motion: reduce) {
+  .ui-nav-bar { animation: none; background: rgb(var(--ui-accent)); }
+  .ui-nav-pill { animation: none; }
+  .ui-nav-pill .animate-spin { animation: none; }
+}

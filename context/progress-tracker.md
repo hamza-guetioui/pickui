@@ -10,6 +10,15 @@ Update at the start and end of every working session: what changed, what's open.
 
 ## History (most recent first)
 
+- **Search + header polish.** ⌘K palette: fixed height, suggestion chips, recent picks (`pickui-recent`),
+  typo-tolerant closest matches, close/clear buttons, keycap footer. Header: high-contrast GitHub button with
+  icon; route-change top bar + bottom-right “Preparing page…” pill (`UIChrome`).
+
+- **Extension pages download-only**. `kind: "extension"` docs pages show Download ZIP +
+  preview (+ props/a11y); code, prompt, CLI/manual install and usage sections are hidden. ZIPs are built
+  statically by `src/app/download/[file]/route.ts` with a dependency-free writer in `src/lib/zip.ts`.
+  `Playground` hides Code/Prompt tabs when those props aren't passed.
+
 - **Packages → Extensions** (`9b8aa12`, on `dev`, not yet in `main`). Kind `package` renamed to
   `extension`. Kept and rebuilt: Ghost Walker (shy / interact / prankster with 10×3 reactions /
   still), Tab Tricks (fun / useful helpers: badge, progress, done, unsaved, countdown, recording, away
