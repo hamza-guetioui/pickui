@@ -1,12 +1,16 @@
 "use client";
 
-import Fireflies from "../library/fireflies";
+import Fireflies, { type FirefliesStyle } from "../library/fireflies";
 import FakeSite from "./_site";
 
-export default function FirefliesDemo({ variant = "animated" }: { variant?: string }) {
+const TONE: Record<FirefliesStyle, "dark" | "night" | "window"> = { fireflies: "night", snow: "window", paper: "dark", leaves: "dark" };
+
+export default function FirefliesDemo({ variant = "fireflies" }: { variant?: string }) {
+  const regular = variant === "regular";
+  const style: FirefliesStyle = regular ? "leaves" : ((["fireflies", "snow", "paper", "leaves"].includes(variant) ? variant : "fireflies") as FirefliesStyle);
   return (
-    <FakeSite tone="night">
-      <Fireflies count={46} animated={variant !== "regular"} />
+    <FakeSite tone={TONE[style]}>
+      <Fireflies key={variant} style={style} animated={!regular} />
     </FakeSite>
   );
 }

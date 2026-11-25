@@ -7,7 +7,7 @@ Install one with the shadcn CLI, copy a single file, or paste an AI prompt that 
 
 🌐 **Live catalogue:** https://pickui.guetix.com · 📄 MIT
 
-- **97 pieces** — 42 components, 22 blocks, 8 templates, 17 packages and 8 mini-games.
+- **83 pieces** — 42 components, 22 blocks, 8 templates, 3 extensions and 8 mini-games.
 - **Zero dependencies.** Every piece is one self-contained `.tsx` file: React + Tailwind CSS, nothing else.
 - **Accessible.** Keyboard support, labels, and `prefers-reduced-motion` handled in every component.
 - **Animated / Regular.** Every component has a calm version (`animated={false}`).
@@ -65,9 +65,10 @@ Deploying your own copy (e.g. a fork)? Set `NEXT_PUBLIC_SITE_URL` (used in insta
 canonical URLs and the sitemap) and optionally `NEXT_PUBLIC_REPO_URL`. See [`.env.example`](.env.example).
 No secrets are needed.
 
-## Packages
+## Extensions
 
-Entries of kind **package** have a framework-agnostic core plus a React wrapper. They are planned as npm
+Extensions are drop-in layers for any page — Ghost Walker, Tab Tricks and Fireflies (falling
+snow, paper and leaves). Each has a framework-agnostic core plus a React wrapper. They are planned as npm
 packages under `@pickui/*` but **are not published yet** — use the CLI or copy the file in the meantime.
 
 ## Contributing

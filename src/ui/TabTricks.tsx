@@ -23,6 +23,8 @@ export default function TabTricks() {
     let timer = 0;
 
     const away = () => {
+      // a Tab Tricks demo on this page owns the tab — don't fight it
+      if (document.documentElement.hasAttribute("data-tab-tricks")) return;
       link = document.querySelector<HTMLLinkElement>("link[rel~='icon']");
       href = link?.href ?? "";
       title = document.title;

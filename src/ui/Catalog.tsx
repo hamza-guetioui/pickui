@@ -26,7 +26,7 @@ const KINDS = [
   { id: "component", label: "Components" },
   { id: "block", label: "Blocks" },
   { id: "template", label: "Templates" },
-  { id: "package", label: "Packages" },
+  { id: "extension", label: "Extensions" },
   { id: "game", label: "Games" },
 ];
 
